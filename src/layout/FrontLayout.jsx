@@ -1,6 +1,7 @@
 import { useEffect, useState, createContext } from "react";
 import { Outlet } from "react-router";
 import axios from "axios";
+import Loader from "../components/Loader";
 
 export const SearchContext = createContext();
 

@@ -1,7 +1,6 @@
 import {useState, useEffect, useRef, useContext } from "react";
 import NewCard from "../components/NewCard";
 import Pagination from "../components/Pagination";
-import Loader from "../components/Loader";
 import { SearchContext } from "../layout/FrontLayout";
 
 const Home = ()=> {
