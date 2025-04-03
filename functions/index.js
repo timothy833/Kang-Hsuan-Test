@@ -20,7 +20,25 @@ import cors from "cors";
 
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = [
+    "https://timothy1994-ee7db.web.app",
+    "https://timothy1994-ee7db.firebaseapp.com",
+    "http://localhost:5173",
+  ];
+  
+app.use(
+    cors({
+        origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+        },
+        methods: ["GET"],
+    })
+);
 
 app.get("/news", async (req, res) => {
     try {
