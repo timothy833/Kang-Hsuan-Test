@@ -38,6 +38,7 @@ const Home = ()=> {
     const handleSearch = async(e)=> {
         e.preventDefault();
         setLoading(true);
+        setPage(1);
         await fetchData();
         setLoading(false);
     } 
@@ -48,6 +49,7 @@ const Home = ()=> {
         setEndDate("");
         setNews([]);
         setPage(1);
+        localStorage.removeItem("searchState");
       };
 
     const pageNews = isMobile

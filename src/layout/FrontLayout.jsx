@@ -11,6 +11,12 @@ const fontSizeOptions = [
     { size: "16px", label: "中" },
     { size: "18px", label: "大" },
 ];
+
+const baseURL =
+  import.meta.env.MODE === "production"
+    ? "https://us-central1-timothy1994-ee7db.cloudfunctions.net/api"
+    : "/api";
+
   
 
 const FrontLayout = ()=> {
@@ -25,28 +31,47 @@ const FrontLayout = ()=> {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
+    useEffect(() => {
+        if (keyword || startDate || endDate) {
+            const searchState = { keyword, startDate, endDate, page };
+            localStorage.setItem("searchState", JSON.stringify(searchState));
+        }
+    }, [keyword, startDate, endDate, page]);
+
+    // --- 重新整理還原狀態 ---
+    useEffect(() => {
+        const saved = JSON.parse(localStorage.getItem("searchState"));
+        if (saved) {
+        setKeyword(saved.keyword );
+        setStartDate(saved.startDate );
+        setEndDate(saved.endDate);
+        setPage(saved.page);
+        fetchData();
+        }
+    }, []);
+
     const fetchData = async () => {
-    const params = {
-        keyword:keyword,
-        StarDate: startDate,
-        EndDate:  endDate,
-        MaxSize: 100,
-        IsRemoveHtmlTag: true,
-    };
-    try {
-        const res = await axios.get("api/news", { params });
-        // 防呆處理，確保不會出錯
-        const sorted = Array.isArray(res.data)
-        ? res.data.sort(
-            (a, b) => new Date(b.上架日期) - new Date(a.上架日期)
-            )
-        : [];
-        setNews(sorted);
-        setPage(1);
-        setHasMore(sorted.length > PAGE_SIZE);
-    } catch (err) {
-        console.error("API 失敗", err);
-    }
+        const params = {
+            keyword:keyword,
+            StarDate: startDate,
+            EndDate:  endDate,
+            MaxSize: 100,
+            IsRemoveHtmlTag: true,
+        };
+
+        try {
+            const res = await axios.get( `${baseURL}/news`, { params });
+            // 防呆處理，確保不會出錯
+            const sorted = Array.isArray(res.data)
+            ? res.data.sort(
+                (a, b) => new Date(b.上架日期) - new Date(a.上架日期)
+                )
+            : [];
+            setNews(sorted);
+            setHasMore(sorted.length > PAGE_SIZE);
+        } catch (err) {
+            console.error("API 失敗", err);
+        }
     };
     
 

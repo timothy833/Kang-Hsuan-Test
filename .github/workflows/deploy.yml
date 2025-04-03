@@ -1,0 +1,32 @@
+name: Firebase Deploy
+
+on:
+  push:
+    branches:
+      - main # 或你想要觸發的 branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          cd functions
+          npm install
+          cd ..
+          npm install
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_TOKEN }}"
+          channelId: live
+          projectId: timothy1994-ee7db
