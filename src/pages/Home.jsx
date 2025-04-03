@@ -20,10 +20,10 @@ const Home = ()=> {
         setHasMore,
         fetchData,
         PAGE_SIZE,
+        setLoading,
       } = useContext(SearchContext);
 
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-    const [loading, setLoading] = useState(false);
     const observer  = useRef();
 
     useEffect(() => {
@@ -37,10 +37,8 @@ const Home = ()=> {
 
     const handleSearch = async(e)=> {
         e.preventDefault();
-        setLoading(true);
         setPage(1);
         await fetchData();
-        setLoading(false);
     } 
 
     const handleClear = () => {
@@ -133,7 +131,6 @@ const Home = ()=> {
                 }}
             />)}
 
-            {loading && <Loader/>}
         </div>
     
     </>)

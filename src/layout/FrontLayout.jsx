@@ -30,6 +30,7 @@ const FrontLayout = ()=> {
     const [endDate, setEndDate] = useState("");
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (keyword || startDate || endDate) {
@@ -60,6 +61,7 @@ const FrontLayout = ()=> {
         };
 
         try {
+            setLoading(true);
             const res = await axios.get( `${baseURL}/news`, { params });
             // 防呆處理，確保不會出錯
             const sorted = Array.isArray(res.data)
@@ -69,8 +71,10 @@ const FrontLayout = ()=> {
             : [];
             setNews(sorted);
             setHasMore(sorted.length > PAGE_SIZE);
+            setLoading(false);
         } catch (err) {
             console.error("API 失敗", err);
+            setLoading(false);
         }
     };
     
@@ -98,6 +102,7 @@ const FrontLayout = ()=> {
             setHasMore,
             fetchData,
             PAGE_SIZE,
+            setLoading,
             }}
         >
             <header className="p-3 bg-dark text-white text-center mb-2"><h3>行政院新聞網</h3></header>
@@ -119,6 +124,8 @@ const FrontLayout = ()=> {
             <main>
                 <Outlet/>
             </main>
+
+            {loading && <Loader/>}
         </SearchContext.Provider>
     )
 }
